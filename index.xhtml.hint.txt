@@ -1,0 +1,29 @@
+&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;AJAX Cities&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h1 style="color:blue"&gt;AJAX Cities&lt;/h1&gt;
+        &lt;p&gt;(Page loaded at #{cityBean.currentTime})&lt;/p&gt;
+
+        &lt;h:form&gt;
+            &lt;h:panelGrid columns="2"&gt;
+                Country:
+                &lt;h:selectOneMenu value="#{cityBean.selectedCountry}"&gt;
+                    &lt;f:selectItems value="#{cityBean.countrySelectItems}" /&gt;
+                    &lt;f:ajax event="change" execute="@this" render="cityList cityDiv" /&gt;
+                &lt;/h:selectOneMenu&gt;
+
+                City:
+                &lt;h:selectOneMenu id="cityList" value="#{cityBean.selectedCity}"&gt;
+                    &lt;f:selectItems value="#{cityBean.citySelectItems}" /&gt;
+                &lt;/h:selectOneMenu&gt;
+                &lt;h:outputText id="cityDiv" value="(Cities loaded at #{cityBean.currentTime})" /&gt;
+            &lt;/h:panelGrid&gt;
+        &lt;/h:form&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;

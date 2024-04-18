@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Lab 06 -- f:selectItems Tags and javax.faces.model.SelectItem</title>
+  </head>
+  <body>
+    <p> Write a simple JSF app that displays several countries and their cities
+      using the <code>selectOneMenu</code> tag and <code>f:selectItems</code>
+      tags as follows. </p>
+    <figure> <img src="./media/screen1.png"
+        alt="screen1" role="presentation" class="img-responsive atto_image_button_text-bottom"
+        style="border: medium groove LightSteelBlue;" height="295" width="436">
+      <figcaption>Initially the app shows an empty Country field and therefore
+        the City list is empty.</figcaption> </figure>
+    <figure> <img src="./media/screen2.png"
+        alt="screen2" role="presentation" class="img-responsive atto_image_button_text-bottom"
+        style="border: medium groove LightSteelBlue;" height="336" width="442">
+      <figcaption>After the user chooses a country, the app updates the city
+        list based on the selected country.</figcaption> </figure>
+    <figure> <img src="./media/screen3.png"
+        alt="screen3" role="presentation" class="img-responsive atto_image_button_text-bottom"
+        style="border: medium groove LightSteelBlue;" height="332" width="438">
+      <figcaption> If the user changes the country selection, the app updates
+        the city list.</figcaption> </figure>
+    <p> The following is a Java method that creates a list of countries and
+      their corresponding cites. The data are stored in a standard Java <code>HashMap</code>
+      which is available in the <code>java.util.HashMap</code> library. (For
+      your reference only, the code is already included in the hints below.) </p>
+    <pre><code>
+    private static Map&lt;string, string[]&gt; createCitiesMap() {
+        HashMap&lt;string, string[]&gt; result = new HashMap&lt;&gt;();
+        result.put("China", new String[]{"Beijing", "Hongkong", "Shanghai"});
+        result.put("England", new String[]{"London", "Oxford", "Manchester"});
+        result.put("France", new String[]{"Paris", "Avignon", "Bordeaux"});
+        result.put("Germany", new String[]{"Berlin", "Munich", "Hamburg"});
+        result.put("USA", new String[]{"New York", "Los Angeles", "Chicago"});
+
+        return result;
+    }</code></pre>
+    <p></p>
+    <h4> Using the <code>h:selectOneMenu</code> tag with the <code>f:selectItems</code>
+      tag </h4>
+    <p> Recall that the <code>h:selectOneMenu</code> tag will normally be
+      rendered as an HTML option list. The <code>f:selectItem</code> and <code>f:selectItems</code>
+      tags represent components that can be nested inside a component that
+      allows you to select one or multiple items. An <code>f:selectItem</code>
+      tag contains the value, label, and description of a single item. An <code>f:selectItems</code>
+      tag contains the values, labels, and descriptions of the <em>entire list
+        of items</em>. We're going to use <code>f:selectItems</code> for this
+      task. </p>
+    <p> Example code: </p>
+    <pre><code>&lt;h:selectOneMenu id="countryList" value="#{cityBean.selectedCountry}"&gt;
+    &lt;f:selectItems value="#{cityBean.countrySelectItems}" /&gt;
+&lt;/h:selectOneMenu&gt;</code></pre>
+    Referring to the <a href="https://javaee.github.io/glassfish/doc/5.0/vdldocs/jsp/f/selectItems.html"
+      target="_blank">Tag Library Documentation</a>, the <code>value</code>
+    attribute of the <code>f:selectItems</code> can be an EL expression
+    pointing to a <code>Collection</code> (e.g. <code>ArrayList</code>) of
+    instances (objects) of the <code>SelectItem</code> class, which is defined
+    in <code>javax.faces.model.SelectItem</code>. Refer to <a href="https://javaee.github.io/javaee-spec/javadocs/javax/faces/model/SelectItem.html"
+      target="_blank">https://javaee.github.io/javaee-spec/javadocs/javax/faces/model/SelectItem.html</a>
+    for the API documentation for the <code>SelectItem</code> class.
+    <p> In our backing bean for the JSF page, we're going to create <code>ArrayList</code>'s
+      of <code>SelectItem</code> objects for the Country and City drop-down
+      menus. </p>
+    <h4> Coding for the app </h4>
+    <p> We need only two source files: <code>index.xhtml</code> and <code>CityBean.java</code>.
+      <code>CityBean</code> is the backing bean for the Facelets page <code>index.xhtml</code>.
+    </p>
+    <p> Incomplete source code for <code>CityBean</code> is <a href="CityBean.java" target="_blank"
+        type="text/plain">here</a>. Most of it is already done. Missing source
+      code is represented by comments delimited by <code>/* */</code>, which
+      you must replace with appropriate code. </p>
+    <p> Incomplete source code for <code>index.xhtml</code> is given below: </p>
+    <pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;AJAX Cities&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h1 style="color:blue"&gt;AJAX Cities&lt;/h1&gt;
+        &lt;p&gt;(Page loaded at #{cityBean.currentTime})&lt;/p&gt;
+
+        &lt;h:form&gt;
+            &lt;h:panelGrid columns="2"&gt;
+                Country:
+                &lt;h:... ...&gt;
+                    &lt;f:... ... /&gt;
+                    &lt;f:ajax event="change" execute="@this" render="cityList cityDiv" /&gt;
+                &lt;/h:...&gt;
+
+                City:
+                &lt;h:selectOneMenu id="cityList" ..."&gt;
+                    ...
+                &lt;/h:...&gt;
+                &lt;h:outputText id="cityDiv" value="(Cities loaded at #{cityBean.currentTime})" /&gt;
+            &lt;/h:panelGrid&gt;
+        &lt;/h:form&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;</code></pre>
+    <p> Missing source code is represented by <code>...</code>, which you must
+      replace with appropriate code. Other than that, you must NOT change
+      anything. (Ajax is used here to make the app more interesting. Code
+      related to Ajax like <code>&lt;f:ajax ...&gt;</code> is already provided,
+      which you can ignore and must not tamper with. If you want to know more
+      about JSF support for Ajax, refer to <a href="https://javaee.github.io/tutorial/jsf-ajax.html#GKIOW"
+        target="_blank">the relevant chapter of the Java EE tutorial</a>.) </p>
+    <!--
+      <a href="#" download="">here</a>.      (Download it to somewhere and open it with a text editor to see the source      code.) 			-->
+    <p></p>
+    <p> Run and test your app to make sure that it works as expected. Zip your
+      project directory into one single file and submit the file. </p>
+  </body>
+</html>
